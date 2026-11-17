@@ -7,6 +7,9 @@ using ServiceSenter.Models;
 
 namespace ServiceSenter.Models
 {
+    /// <summary>
+    /// класс таблицы должностей сотрудников, наследуется Id из BaseEntity 
+    /// </summary>
     public class EmployeeRole : BaseEntity
     {
         public string RoleName { get; set; }

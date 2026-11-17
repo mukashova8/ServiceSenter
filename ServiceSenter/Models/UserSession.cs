@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace ServiceSenter.Models
 {
+    /// <summary>
+    /// cтатический класс для хранения данных текущего пользователя после входа в систему
+    /// </summary>
     public static class UserSession
     {
         public static int Id { get; set; }

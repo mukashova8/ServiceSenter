@@ -5,6 +5,9 @@ using ServiceSenter.Models;
 
 namespace ServiceSenter.Models
 {
+    /// <summary>
+    /// класс таблицы заявок, наследуется Id из BaseEntity 
+    /// </summary>
     public class Request : BaseEntity
     {
         public DateTime DateReceived { get; set; }

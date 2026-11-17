@@ -10,6 +10,9 @@ using ServiceSenter.Models;
 
 namespace ServiceSenter.Views
 {
+    /// <summary>
+    /// класс окна авторизации
+    /// </summary>
     public partial class LoginWindow : Window
     {
         public readonly AppDbContext _context;
@@ -29,7 +32,10 @@ namespace ServiceSenter.Views
                 TxtError.Text = "Заполните все поля!";
                 return;
             }
+            //поиск пользователя по логину (подтягиваем роль)
             var user = _context.Employees.Include(e => e.Role).FirstOrDefault(u => u.Login == login);
+
+            //проверка пароля (сравнение хеш из БД с хешем введенного пароля)
             if (user != null && user.PasswordHash == HashPassword(password))
             {
                 UserSession.Id = user.Id;
@@ -43,9 +49,13 @@ namespace ServiceSenter.Views
             }
         }
 
+        //открытие окна по роли
         public void OpenRoleWindow()
         {
             Window nextWindow = null;
+
+            if (UserSession.Role == "Администратор")
+                nextWindow = App.ServiceProvider.GetRequiredService<AdminWindow>();
 
             if (nextWindow != null)
             {
@@ -54,6 +64,7 @@ namespace ServiceSenter.Views
             }
         }
 
+        //хеширование пароля (SHA256)
         public static string HashPassword(string password)
         {
             using (var sha256 = SHA256.Create())

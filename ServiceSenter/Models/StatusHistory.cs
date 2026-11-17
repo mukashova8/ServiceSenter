@@ -5,6 +5,9 @@ using ServiceSenter.Models;
 
 namespace ServiceSenter.Models
 {
+    /// <summary>
+    /// класс таблицы истории статусов, наследуется Id из BaseEntity 
+    /// </summary>
     public class StatusHistory : BaseEntity
     {
         public DateTime ChangeDatetime { get; set; }

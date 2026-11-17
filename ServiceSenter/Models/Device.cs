@@ -4,6 +4,9 @@ using ServiceSenter.Models;
 
 namespace ServiceSenter.Models
 {
+    /// <summary>
+    /// класс таблицы устройств, наследуется Id из BaseEntity
+    /// </summary>
     public class Device : BaseEntity
     {
         public DeviceType DeviceType { get; set; }

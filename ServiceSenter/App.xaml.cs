@@ -18,7 +18,8 @@ namespace ServiceSenter
 
 
             serviceCollection.AddTransient<LoginWindow>();
-            
+            serviceCollection.AddTransient<AdminWindow>();
+
 
             ServiceProvider = serviceCollection.BuildServiceProvider();
 

@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace ServiceSenter.Models
 {
+    /// <summary>
+    /// базовый класс с первичным ключом Id для всех таблиц
+    /// </summary>
     public class BaseEntity
     {
         [Key]

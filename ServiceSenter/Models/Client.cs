@@ -5,6 +5,9 @@ using ServiceSenter.Models;
 
 namespace ServiceSenter.Models
 {
+    /// <summary>
+    /// класс таблицы клиентов, наследуется Id из BaseEntity
+    /// </summary>
     public class Client : BaseEntity
     {
         public string FullName { get; set; }

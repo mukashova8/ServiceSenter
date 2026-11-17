@@ -4,6 +4,9 @@ using ServiceSenter.Models;
 
 namespace ServiceSenter.Models
 {
+    /// <summary>
+    /// класс таблицы статусов, наследуется Id из BaseEntity 
+    /// </summary>
     public class RequestStatus : BaseEntity
     {
         public string StatusName { get; set; }
