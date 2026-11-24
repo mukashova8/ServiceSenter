@@ -79,8 +79,18 @@ namespace ServiceSenter.Views
 
             if (role == null)
             {
-                TxtError.Text = "Выбранная должность не найдена! Добавление новых запрещено.";
-                return;
+                //проверка, что выбранная роль существует в enum 
+                if (Enum.TryParse(selectedRoleName, out EmployeeRoleEnum validRole))
+                {
+                    role = new EmployeeRole { RoleName = selectedRoleName };
+                    _context.EmployeesRole.Add(role);
+                    _context.SaveChanges(); 
+                }
+                else
+                {
+                    TxtError.Text = "Ошибка: недопустимая должность!";
+                    return;
+                }
             }
 
             //сохранение

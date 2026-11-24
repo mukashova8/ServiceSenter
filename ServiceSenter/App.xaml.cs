@@ -22,6 +22,7 @@ namespace ServiceSenter
             //регистрация окон
             serviceCollection.AddTransient<LoginWindow>();
             serviceCollection.AddTransient<AdminWindow>();
+            serviceCollection.AddTransient<OperatorWindow>();
 
 
             ServiceProvider = serviceCollection.BuildServiceProvider();
