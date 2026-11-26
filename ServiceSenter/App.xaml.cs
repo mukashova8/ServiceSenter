@@ -23,6 +23,7 @@ namespace ServiceSenter
             serviceCollection.AddTransient<LoginWindow>();
             serviceCollection.AddTransient<AdminWindow>();
             serviceCollection.AddTransient<OperatorWindow>();
+            serviceCollection.AddTransient<MasterWindow>();
 
 
             ServiceProvider = serviceCollection.BuildServiceProvider();

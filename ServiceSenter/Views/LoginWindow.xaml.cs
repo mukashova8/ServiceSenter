@@ -58,6 +58,8 @@ namespace ServiceSenter.Views
                 nextWindow = App.ServiceProvider.GetRequiredService<AdminWindow>();
             else if (UserSession.Role == "Оператор")
                 nextWindow = App.ServiceProvider.GetRequiredService<OperatorWindow>();
+            else if (UserSession.Role == "Мастер")
+                nextWindow = App.ServiceProvider.GetRequiredService<MasterWindow>();
 
             if (nextWindow != null)
             {
