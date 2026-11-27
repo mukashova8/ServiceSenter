@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceSenter.Data;
 using ServiceSenter.Models;
+using ServiceSenter.Patterns.Factory;
 
 namespace ServiceSenter.Views
 {
@@ -52,19 +53,19 @@ namespace ServiceSenter.Views
         //открытие окна по роли
         public void OpenRoleWindow()
         {
-            Window nextWindow = null;
+            //получение нужной фабрикм через класс-провайдер (по роли)
+            IWindowFactory factory = WindowFactoryProvider.GetFactory(UserSession.Role);
 
-            if (UserSession.Role == "Администратор")
-                nextWindow = App.ServiceProvider.GetRequiredService<AdminWindow>();
-            else if (UserSession.Role == "Оператор")
-                nextWindow = App.ServiceProvider.GetRequiredService<OperatorWindow>();
-            else if (UserSession.Role == "Мастер")
-                nextWindow = App.ServiceProvider.GetRequiredService<MasterWindow>();
-
-            if (nextWindow != null)
+            //если фабрика найдена, создание окна и показ
+            if (factory != null)
             {
+                Window nextWindow = factory.CreateWindow();
                 nextWindow.Show();
                 this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Неизвестная роль пользователя!", "Ошибка");
             }
         }
 

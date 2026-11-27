@@ -4,6 +4,7 @@ using System.Windows;
 using Microsoft.EntityFrameworkCore;
 using ServiceSenter.Data;
 using ServiceSenter.Models;
+using ServiceSenter.Patterns.State;
 
 namespace ServiceSenter.Views
 {
@@ -86,6 +87,30 @@ namespace ServiceSenter.Views
                 //сохранение старого статуса, чтобы понять, изменился ли он
                 var oldStatusId = _request.Status?.Id;
                 var newStatus = _context.RequestStatuses.FirstOrDefault(s => s.Id == (int)CmbStatus.SelectedValue);
+
+                //подключение паттерна Состояние
+                //проверка если статус действительно изменился
+                if (oldStatusId != newStatus.Id)
+                {
+                    //получение текущего статуса в виде Enum
+                    if (!Enum.TryParse(_request.Status?.StatusName, out RequestStatusEnum currentStatusEnum))
+                        currentStatusEnum = RequestStatusEnum.Принята;
+
+                    //получение нового статуса в виде Enum
+                    if (!Enum.TryParse(newStatus.StatusName, out RequestStatusEnum newStatusEnum))
+                    {
+                        TxtError.Text = "Ошибка чтения нового статуса!";
+                        return;
+                    }
+
+                    //проверка перехода через наш паттерн
+                    var stateContext = new RequestStateContext(currentStatusEnum);
+                    if (!stateContext.CanTransitionTo(newStatusEnum))
+                    {
+                        TxtError.Text = $"Недопустимый переход: из '{currentStatusEnum}' нельзя в '{newStatusEnum}'!";
+                        return; 
+                    }
+                }
 
                 _request.Client = _context.Clients.FirstOrDefault(c => c.Id == (int)CmbClient.SelectedValue);
                 _request.Device = _context.Devices.FirstOrDefault(d => d.Id == (int)CmbDevice.SelectedValue);

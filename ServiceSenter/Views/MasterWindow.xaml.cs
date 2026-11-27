@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using Microsoft.EntityFrameworkCore;
 using ServiceSenter.Data;
 using ServiceSenter.Models;
+using ServiceSenter.Patterns.State;
 
 namespace ServiceSenter.Views
 {
@@ -74,6 +75,24 @@ namespace ServiceSenter.Views
 
             //если статус не изменился — ничего не делаем
             if (_selectedRequest.Status != null && _selectedRequest.Status.Id == newStatus.Id) return;
+
+            //применение паттерна состояние 
+            //получение текущего статуса заявки в виде перечисления(Enum), если нет по умолчанию - принята
+            if (!Enum.TryParse(_selectedRequest.Status?.StatusName, out RequestStatusEnum currentStatusEnum))
+                currentStatusEnum = RequestStatusEnum.Принята;
+
+            //получение новогой статуса, который выбрал мастер, тоже в виде Enum.
+            if (!Enum.TryParse(newStatus.StatusName, out RequestStatusEnum newStatusEnum)) return;
+
+            //создание Контекста — он автоматически подтянет нужный класс состояния 
+            var stateContext = new RequestStateContext(currentStatusEnum);
+
+            //проверка разрешен ли переход по правилам паттерна
+            if (!stateContext.CanTransitionTo(newStatusEnum))
+            {
+                MessageBox.Show($"Недопустимый переход статуса: из '{currentStatusEnum}' нельзя перейти в '{newStatusEnum}'!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
             //1 замена статуса в самой заявке 
             _selectedRequest.Status = newStatus;
