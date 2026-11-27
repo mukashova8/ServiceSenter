@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ServiceSenter.Models;
+using System;   
+using System.Linq; 
 
 namespace ServiceSenter.Data
 {
@@ -34,6 +36,40 @@ namespace ServiceSenter.Data
                 .WithOne(h => h.Request)
                 //если удалить заявку в истории она не удалиться
                 .OnDelete(DeleteBehavior.NoAction);
+        }
+
+        //метод автозаполнения справочников (статусы, роли, типы устройств) из enum
+        public void SeedData()
+        {
+            //заполнение таблицы статусов заявок из RequestStatusEnum
+            if (!RequestStatuses.Any())
+            {
+                foreach (RequestStatusEnum status in Enum.GetValues(typeof(RequestStatusEnum)))
+                {
+                    RequestStatuses.Add(new RequestStatus { StatusName = status.ToString() });
+                }
+                SaveChanges();
+            }
+
+            //заполнение таблицы ролей сотрудников из EmployeeRoleEnum
+            if (!EmployeesRole.Any())
+            {
+                foreach (EmployeeRoleEnum role in Enum.GetValues(typeof(EmployeeRoleEnum)))
+                {
+                    EmployeesRole.Add(new EmployeeRole { RoleName = role.ToString() });
+                }
+                SaveChanges();
+            }
+
+            //заполнение таблицы типов устройств из DeviceTypeEnum
+            if (!DeviceTypes.Any())
+            {
+                foreach (DeviceTypeEnum type in Enum.GetValues(typeof(DeviceTypeEnum)))
+                {
+                    DeviceTypes.Add(new DeviceType { TypeName = type.ToString() });
+                }
+                SaveChanges();
+            }
         }
     }
 }

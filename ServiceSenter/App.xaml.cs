@@ -33,6 +33,8 @@ namespace ServiceSenter
             {
                 var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 db.Database.EnsureCreated();
+                //автозаполнение справочников (статусы, роли, типы устройств)
+                db.SeedData(); 
             }
 
             //открытие окна авторизации

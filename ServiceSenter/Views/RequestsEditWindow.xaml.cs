@@ -69,17 +69,42 @@ namespace ServiceSenter.Views
                     Status = _context.RequestStatuses.FirstOrDefault(s => s.Id == (int)CmbStatus.SelectedValue)
                 };
                 _context.Requests.Add(_request);
+                //сохранение, чтобы у заявки появился Id перед записью в историю
+                _context.SaveChanges(); 
+
+                //запись начального статуса новой заявки в историю статусов
+                _context.StatusHistories.Add(new StatusHistory
+                {
+                    Request = _request,
+                    Status = _request.Status,
+                    ChangeDatetime = DateTime.Now
+                });
             }
             //обновление старой
             else
             {
+                //сохранение старого статуса, чтобы понять, изменился ли он
+                var oldStatusId = _request.Status?.Id;
+                var newStatus = _context.RequestStatuses.FirstOrDefault(s => s.Id == (int)CmbStatus.SelectedValue);
+
                 _request.Client = _context.Clients.FirstOrDefault(c => c.Id == (int)CmbClient.SelectedValue);
                 _request.Device = _context.Devices.FirstOrDefault(d => d.Id == (int)CmbDevice.SelectedValue);
                 _request.Employee = _context.Employees.FirstOrDefault(emp => emp.Id == (int)CmbMaster.SelectedValue);
-                _request.Status = _context.RequestStatuses.FirstOrDefault(s => s.Id == (int)CmbStatus.SelectedValue);
+                _request.Status = newStatus;
                 _request.FaultDescription = TxtFault.Text;
                 _request.Cost = cost;
                 _request.DateReceived = DpDateReceived.SelectedDate ?? _request.DateReceived;
+
+                //если статус изменился — запись в историю статусов
+                if (oldStatusId != newStatus.Id)
+                {
+                    _context.StatusHistories.Add(new StatusHistory
+                    {
+                        Request = _request,
+                        Status = newStatus,
+                        ChangeDatetime = DateTime.Now
+                    });
+                }
             }
 
             _context.SaveChanges();
