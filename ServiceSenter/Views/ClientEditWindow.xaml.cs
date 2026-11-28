@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using ServiceSenter.Data;
 using ServiceSenter.Models;
+using System.Text.RegularExpressions;
 
 namespace ServiceSenter.Views
 {
@@ -39,6 +40,7 @@ namespace ServiceSenter.Views
         //сохранение и проверка полей на пустату и добавление в бд
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
+            //проверка на пустоту
             if (string.IsNullOrWhiteSpace(TxtFullName.Text))
             {
                 TxtError.Text = "Введите ФИО клиента!";
@@ -57,9 +59,27 @@ namespace ServiceSenter.Views
                 return;
             }
 
+            //проверка телефона
+            //очищение ввода от пробелов, скобок и дефисов 
+            string cleanPhone = Regex.Replace(TxtPhone.Text, @"[^\d+]", "");
+
+            if (cleanPhone.Length < 11 || cleanPhone.Length > 12)
+            {
+                TxtError.Text = "Неверный формат телефона! Введите 11 цифр";
+                return;
+            }
+
+            //проверка email
+            string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            if (!Regex.IsMatch(TxtEmail.Text, emailPattern))
+            {
+                TxtError.Text = "Неверный формат Email!";
+                return;
+            }
+
+            //сохранение в бд
             if (_client == null)
             {
-
                 _client = new Client
                 {
                     FullName = TxtFullName.Text,
@@ -76,6 +96,7 @@ namespace ServiceSenter.Views
                 _client.Email = TxtEmail.Text;
                 _client.FirstContactDate = DpFirstContact.SelectedDate ?? _client.FirstContactDate;
             }
+
             //сохранение в бд
             _context.SaveChanges();
             this.DialogResult = true;
